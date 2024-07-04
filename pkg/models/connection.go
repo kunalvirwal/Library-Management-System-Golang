@@ -1,14 +1,14 @@
 package models
 
 import (
-	"context"
-	"database/sql"
 	"fmt"
 	"os"
 	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/kunalvirwal/go-mvc/pkg/utils"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func dataSourceName() string {
@@ -20,24 +20,26 @@ func dataSourceName() string {
 	host := os.Getenv("DB_HOST")
 	database := os.Getenv("DB_DATABASE")
 
-	return fmt.Sprintf("%v:%v@tcp(%v)/%v", username, password, host, database) // Sprintf returns a string instead of printing it to stdout
+	return fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, database) // Sprintf returns a string instead of printing it to stdout
 
 }
 
-func Connection() (*sql.DB, error) {
-	db, err := sql.Open("mysql", dataSourceName()) // db is a connection pool  // here only DSN is validated
-	utils.CheckNilErr(err, "unable to open connections")
+func Connection() (*gorm.DB, error) {
 
-	db.SetMaxOpenConns(20)
-	db.SetMaxIdleConns(20)
-	db.SetConnMaxLifetime(time.Minute * 5)
+	db, err := gorm.Open(mysql.Open(dataSourceName()), &gorm.Config{}) // db is a connection pool  // here only DSN is validated
+	utils.CheckNilErr(err, "Unable to connect to DB")
 
-	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second) // we create a context of 5 sec to cancel the connection if nothing returned by pinging the db
-	defer cancelfunc()
+	db.AutoMigrate(&BOOKS{})
+	db.AutoMigrate(&USER{})
+	db.AutoMigrate(&BORROWING_HISTORY{})
+	db.AutoMigrate(&PENDING_REQUESTS{})
 
-	err = db.PingContext(ctx) // pings the db for connection verification
-	utils.CheckNilErr(err, "DB pinging error")
+	sqldb, err := db.DB()
+	utils.CheckNilErr(err, "Unable to get SQL DB instance")
 
-	fmt.Println("Ayye! DB is connected!")
+	sqldb.SetMaxOpenConns(20)
+	sqldb.SetMaxIdleConns(20)
+	sqldb.SetConnMaxLifetime(time.Minute * 5)
+
 	return db, err
 }

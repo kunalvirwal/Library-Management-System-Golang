@@ -11,8 +11,12 @@
 - Bulid the program using
   > go build -o LabsLibrary ./cmd/main.go
 
-- Run the server
+- Run the server.
   > ./LabsLibrary
 
-- Visit `https://localhost:5000` 
+- Visit `https://localhost:4000` 
 - An admin account will always be created with credentials "admin@sdslabs.com" and password "A" if no other admin account present in database.
+
+
+# Possible Future Improvements
+- All the model functions return user information as a struct, the code can be made faster by returning poiters to the structs

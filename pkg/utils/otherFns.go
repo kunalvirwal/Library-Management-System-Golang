@@ -2,7 +2,13 @@ package utils
 
 import (
 	"fmt"
+	"os"
 	"strings"
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/joho/godotenv"
+	"github.com/kunalvirwal/go-mvc/pkg/types"
 )
 
 func CheckNilErr(err error, st string) {
@@ -13,12 +19,40 @@ func CheckNilErr(err error, st string) {
 	}
 }
 
-func sanitise(query string) bool {
-	wrongCharacters := []string{"'", "\"", "`", "--", "=", " ", "(", ")", ","}
+func Sanitise(query string, space bool) bool {
+	wrongCharacters := []string{"'", "\"", "`", "--", "=", "(", ")", ","}
+	if space {
+		wrongCharacters = append(wrongCharacters, " ")
+	}
 	for _, val := range wrongCharacters {
 		if strings.Contains(query, val) {
 			return false
 		}
 	}
 	return true
+}
+
+func GenerateJWT(uuid int, email string, name string, role string) (string, time.Time) {
+
+	err := godotenv.Load()
+	CheckNilErr(err, "Unable to load .env")
+	secret_key := []byte(os.Getenv("SECRET_KEY"))
+
+	expirationTime := time.Now().Add(time.Hour * 24)
+	claims := &types.Claims{
+		UUID:  uuid,
+		Email: email,
+		Name:  name,
+		Role:  role,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(secret_key)
+	CheckNilErr(err, "Unable to sign JWT key")
+
+	return tokenString, expirationTime
+
 }
