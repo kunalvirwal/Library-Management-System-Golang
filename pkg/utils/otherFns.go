@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -55,4 +56,13 @@ func GenerateJWT(uuid int, email string, name string, role string) (string, time
 
 	return tokenString, expirationTime
 
+}
+
+func DeleteJWT(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{
+		Name:    "token",
+		Value:   "",
+		Expires: time.Unix(0, 0),
+		Path:    "/",
+	})
 }

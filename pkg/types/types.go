@@ -1,6 +1,10 @@
 package types
 
-import "github.com/dgrijalva/jwt-go"
+import (
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
+)
 
 type Claims struct {
 	UUID  int    `json:"uuid"`
@@ -11,3 +15,25 @@ type Claims struct {
 }
 
 type ContextKeyType string
+
+type BooksCheckedOut struct {
+	BUID          int
+	NAME          string
+	CHECKOUT_DATE time.Time
+	Req           bool `gorm:"default:false"`
+}
+
+type BooksReturned struct {
+	BUID          int
+	NAME          string
+	CHECKOUT_DATE time.Time
+	CHECKIN_DATE  *time.Time `gorm:"not null"`
+}
+
+type PendingRequestData struct {
+	UUID      int
+	BUID      int
+	USER_NAME string
+	BOOK_NAME string
+	TYPE      bool
+}

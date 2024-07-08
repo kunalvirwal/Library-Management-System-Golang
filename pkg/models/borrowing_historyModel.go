@@ -3,8 +3,8 @@ package models
 import "time"
 
 type BORROWING_HISTORY struct {
-	UUID          uint       `gorm:"not null"`
-	BUID          uint       `gorm:"not null"`
+	UUID          int        `gorm:"not null"`
+	BUID          int        `gorm:"not null"`
 	USER          USER       `gorm:"foreignKey:UUID;references:UUID"`
 	BOOKS         BOOKS      `gorm:"foreignKey:BUID;references:BUID"`
 	CHECKOUT_DATE time.Time  `gorm:"not null"`

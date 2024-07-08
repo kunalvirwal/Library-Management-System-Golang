@@ -43,7 +43,7 @@ func AuthenticateToken(next http.Handler) http.Handler {
 			claims := &types.Claims{}
 
 			if token != "" {
-				fmt.Println("Entered")
+
 				tkn, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
 					err := godotenv.Load()
 					utils.CheckNilErr(err, "Unable to load .env in AuthenticateToken")
@@ -61,12 +61,7 @@ func AuthenticateToken(next http.Handler) http.Handler {
 				r = r.WithContext(ctx)
 
 				if !tkn.Valid {
-					http.SetCookie(w, &http.Cookie{
-						Name:    "token",
-						Value:   "",
-						Expires: time.Unix(0, 0),
-						Path:    "/",
-					})
+					utils.DeleteJWT(w)
 					// fmt.Println("Token reset")    // delete that invalid token
 				}
 
@@ -92,8 +87,8 @@ func AuthorizeUser(next http.Handler) http.Handler { // common to all middleware
 
 			data, ok := r.Context().Value(user).(*types.Claims)
 			if data != nil && ok {
-				if data.Email != "" && data.Name != "" && (data.Role == "admin" || data.Role == "user") { /////can check expiration date condition too
-					fmt.Println(data)
+				if data.Email != "" && data.Name != "" && data.UUID > 0 && (data.Role == "admin" || data.Role == "user") { /////can check expiration date condition too
+					// fmt.Println(data)
 					next.ServeHTTP(w, r)
 				} else {
 					http.SetCookie(w, &http.Cookie{
@@ -145,7 +140,12 @@ func CreateAdmin(next http.HandlerFunc) http.HandlerFunc {
 func SanitiseEmail(next http.HandlerFunc) http.HandlerFunc { // route specific middlewares have to return http.HandlerFunc
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		r.ParseForm()
+		err := r.ParseForm()
+		if err != nil {
+			http.Redirect(w, r, "/logout", http.StatusSeeOther)
+			fmt.Println("Invalid Post req paramemeters")
+			return
+		}
 		inpEmail := strings.ToLower(strings.TrimSpace(r.FormValue("email")))
 		valid := true
 		parts := strings.Split(inpEmail, "@")
@@ -162,5 +162,33 @@ func SanitiseEmail(next http.HandlerFunc) http.HandlerFunc { // route specific m
 		// http.Redirect(w, r, "/", http.StatusSeeOther)
 		t := views.LoginView()
 		t.Execute(w, true)
+	})
+}
+
+func IsUser(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		data, ok := r.Context().Value(user).(*types.Claims)
+		if data != nil && ok {
+			if data.Role == "user" {
+				next.ServeHTTP(w, r)
+				return
+			}
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+
+	})
+}
+
+func IsAdmin(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		data, ok := r.Context().Value(user).(*types.Claims)
+		if data != nil && ok {
+			if data.Role == "admin" {
+				next.ServeHTTP(w, r)
+				return
+			}
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+
 	})
 }

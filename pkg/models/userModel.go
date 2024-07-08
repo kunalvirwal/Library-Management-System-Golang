@@ -7,5 +7,5 @@ type USER struct {
 	PHN_NO        int64  `gorm:"type:bigint"`
 	PASSWORD      string `gorm:"type:varchar(1000)"`
 	ROLE          string `gorm:"type:varchar(10)"`
-	ADMIN_REQUEST *bool  `gorm:"type:boolean;default:false"`
+	ADMIN_REQUEST *bool  `gorm:"type:boolean;default:null"`
 }
