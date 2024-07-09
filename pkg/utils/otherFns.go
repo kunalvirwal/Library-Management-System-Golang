@@ -10,6 +10,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/joho/godotenv"
 	"github.com/kunalvirwal/go-mvc/pkg/types"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func CheckNilErr(err error, st string) {
@@ -65,4 +66,18 @@ func DeleteJWT(w http.ResponseWriter) {
 		Expires: time.Unix(0, 0),
 		Path:    "/",
 	})
+}
+
+func MatchHashtoPassword(originalHash string, password string) bool {
+	inp_pwd := []byte(password)
+	og_pwd := []byte(originalHash)
+	err := bcrypt.CompareHashAndPassword(og_pwd, inp_pwd)
+	return err == nil
+}
+
+func SaltNhash(pwd string) string {
+	inp_pwd := []byte(pwd)
+	hashedPwdBytes, err := bcrypt.GenerateFromPassword(inp_pwd, bcrypt.MinCost)
+	CheckNilErr(err, "Unable to Hash password")
+	return string(hashedPwdBytes)
 }

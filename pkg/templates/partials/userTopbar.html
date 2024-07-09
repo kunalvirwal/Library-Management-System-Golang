@@ -40,7 +40,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{if eq .path "/cvt_admin" }} active {{end}}"
                         {{if eq .path "/cvt_admin" }} aria-current="page" {{end}}
-                        href="{{if eq .path "/cvt_admin"}} # {{else}} # {{end}}"><i
+                        href="{{if eq .path "/cvt_admin" }}{{else}}/cvt_admin{{end}}"><i
                         class="fas fa-user-lock fa-fw me-3"></i><span>Request Admin Status</span></a>
 
                 </li>

@@ -38,6 +38,21 @@ func SearchUserEmail(DB *gorm.DB, email string) (USER, bool) {
 	return user, true
 }
 
+func SearchUserUUID(DB *gorm.DB, uuid int) (USER, bool) {
+	var user USER
+	res := DB.Where("UUID=?", uuid).First(&user)
+	if res.Error != nil {
+		if res.Error == gorm.ErrRecordNotFound {
+
+			return user, false
+
+		} else {
+			utils.CheckNilErr(res.Error, "Error with DB while finding admin") //// if an unknown error occurs here then panic will stop the control flow, if checkNilErr has to be removed then adequate return has too be added
+		}
+	}
+	return user, true
+}
+
 func CreateNewUser(DB *gorm.DB, name string, email string, phn_no int64, password string) {
 	falsevalue := false
 	var status *bool = &falsevalue
@@ -218,8 +233,38 @@ func CreateNewBook(DB *gorm.DB, name string, desc string, qty int) {
 		NAME:        name,
 		DESCRIPTION: desc,
 		CHECKIN:     qty,
-		TOTAL:       qty}
-
+		TOTAL:       qty,
+	}
 	res := DB.Create(&book)
 	utils.CheckNilErr(res.Error, "Unable to create book")
+}
+
+func GetAdminRequests(DB *gorm.DB) []USER {
+	var dataset []USER
+	DB.Where("ADMIN_REQUEST", true).Find(&dataset)
+	return dataset
+}
+
+func CreateAdminReq(DB *gorm.DB, uuid int) {
+	var user USER
+	truevalue := true
+	res := DB.Where("UUID=?", uuid).First(&user)
+	utils.CheckNilErr(res.Error, "Error with DB while finding user") //// if an unknown error occurs here then panic will stop the control flow, if checkNilErr has to be removed then adequate return should be added
+	user.ADMIN_REQUEST = &truevalue
+	DB.Save(&user)
+
+}
+
+func SetAdminReq(DB *gorm.DB, uuid int, status bool) {
+	var user USER
+	falsevalue := false
+	res := DB.Where("UUID=?", uuid).First(&user)
+	utils.CheckNilErr(res.Error, "Error with DB while finding user") //// if an unknown error occurs here then panic will stop the control flow, if checkNilErr has to be removed then adequate return should be added
+	if status {
+		user.ADMIN_REQUEST = nil
+		user.ROLE = "admin"
+	} else {
+		user.ADMIN_REQUEST = &falsevalue
+	}
+	DB.Save(&user)
 }

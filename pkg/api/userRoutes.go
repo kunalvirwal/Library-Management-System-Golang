@@ -8,4 +8,6 @@ import (
 
 func UserRoutes(r *mux.Router) {
 	r.HandleFunc("/user/dashboard", middlewares.IsUser(controllers.GetUserData)).Methods("GET")
+	r.HandleFunc("/user/refresh", controllers.Refresh).Methods("POST")
+
 }

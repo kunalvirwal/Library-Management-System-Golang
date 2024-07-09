@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"slices"
 
@@ -15,7 +16,7 @@ func GetUserData(w http.ResponseWriter, r *http.Request) {
 	if data != nil && ok {
 		db, err := models.Connection()
 		utils.CheckNilErr(err, "Unable To load DB in GetUserData")
-		////////////////chek if a user with this jwt exists????
+		fmt.Println(data)
 		books := models.GetCheckedOutBooks(db, data.UUID)
 		result := models.GetAllPendingCheckinReqByUUID(db, data.UUID)
 		past_books := models.GetAllPastCheckedInBooks(db, data.UUID)
@@ -37,6 +38,34 @@ func GetUserData(w http.ResponseWriter, r *http.Request) {
 
 		t := views.UserDashView()
 		t.Execute(w, sendData)
+	} else {
+		http.Redirect(w, r, "/logout", http.StatusSeeOther)
+	}
+}
+
+func Refresh(w http.ResponseWriter, r *http.Request) {
+
+	data, ok := r.Context().Value(user).(*types.Claims)
+	if data != nil && ok {
+		uuid := data.UUID
+
+		db, err := models.Connection()
+		utils.CheckNilErr(err, "Unable To load DB in GetUserData")
+
+		user, found := models.SearchUserUUID(db, uuid)
+		if !found {
+			http.Redirect(w, r, "/logout", http.StatusSeeOther)
+			return
+		}
+
+		if user.ROLE == "admin" {
+
+			http.Redirect(w, r, "/logout", http.StatusSeeOther)
+			return
+		}
+		http.Redirect(w, r, "/cvt_admin", http.StatusSeeOther)
+		return
+
 	} else {
 		http.Redirect(w, r, "/logout", http.StatusSeeOther)
 	}

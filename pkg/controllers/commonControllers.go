@@ -54,12 +54,13 @@ func NewUser(w http.ResponseWriter, r *http.Request) {
 	password := strings.TrimSpace(r.FormValue("password"))
 	email := strings.TrimSpace(r.FormValue("email"))
 	phn_no, err := strconv.ParseInt(r.FormValue("phn_no"), 10, 64)
-	if err != nil || !utils.Sanitise(name, false) || phn_no > 9999999999 || phn_no < 1000000000 || len(name) == 0 || len(name) > 50 {
+	if err != nil || !utils.Sanitise(name, false) || len([]byte(password)) > 72 || phn_no > 9999999999 || phn_no < 1000000000 || len(name) == 0 || len(name) > 50 {
 		t := views.SignupView()
 		t.Execute(w, true)
 		return
 	}
-	// var user models.USER
+	password = utils.SaltNhash(password)
+
 	db, err := models.Connection()
 	utils.CheckNilErr(err, "Unable to create Db instance")
 	_, found := models.SearchUserEmail(db, email)
@@ -68,7 +69,7 @@ func NewUser(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, true)
 		return
 	}
-	models.CreateNewUser(db, name, email, phn_no, password) ////////////////////saltnhash
+	models.CreateNewUser(db, name, email, phn_no, password)
 	Logging(w, r)
 }
 
@@ -78,9 +79,9 @@ func Logging(w http.ResponseWriter, r *http.Request) {
 	db, err := models.Connection()
 	utils.CheckNilErr(err, "Unable to create Db instance")
 	user, found := models.SearchUserEmail(db, email)
-
-	if found && user.PASSWORD == password { /////////////////////////// compare salted passwords
-
+	correctPwd := utils.MatchHashtoPassword(user.PASSWORD, password)
+	if found && correctPwd {
+		// fmt.Println(user.UUID)
 		token, expirationTime := utils.GenerateJWT(user.UUID, email, user.NAME, user.ROLE)
 
 		http.SetCookie(w, &http.Cookie{
@@ -335,6 +336,7 @@ func Account(w http.ResponseWriter, r *http.Request) {
 			"NAME":   user.NAME,
 			"EMAIL":  user.EMAIL,
 			"PHN_NO": user.PHN_NO,
+			"role":   user.ROLE,
 			"path":   r.URL.String(),
 		}
 
@@ -376,6 +378,120 @@ func EditAccount(w http.ResponseWriter, r *http.Request) {
 
 		models.UpdateUserData(db, uuid, name, phn_no)
 		http.Redirect(w, r, "/logout", http.StatusSeeOther)
+
+	} else {
+		fmt.Println("Invalid Post req paramemeters")
+		http.Redirect(w, r, "/logout", http.StatusSeeOther)
+	}
+}
+
+func GetCvtAdmin(w http.ResponseWriter, r *http.Request) {
+	data, ok := r.Context().Value(user).(*types.Claims)
+	if data != nil && ok {
+		role := data.Role
+		email := data.Email
+		uuid := data.UUID
+
+		db, err := models.Connection()
+		utils.CheckNilErr(err, "Unable to create Db instance")
+
+		user, found := models.SearchUserEmail(db, email)
+		if !found {
+			http.Redirect(w, r, "/logout", http.StatusSeeOther)
+		}
+
+		if role == "user" {
+			applied := user.ADMIN_REQUEST
+			if applied == nil {
+
+				Refresh(w, r)
+				return
+			}
+
+			sendData := map[string]interface{}{
+				"applied": *applied,
+				"uuid":    uuid,
+				"path":    r.URL.String(),
+			}
+			t := views.UserCvtAdminView()
+			t.Execute(w, sendData)
+
+		} else if role == "admin" {
+			users := models.GetAdminRequests(db)
+			sendData := map[string]interface{}{
+				"users": users,
+				"path":  r.URL.String(),
+			}
+
+			t := views.AdminCvtAdminView()
+			t.Execute(w, sendData)
+
+		}
+
+	} else {
+		fmt.Println("Invalid Post req paramemeters")
+		http.Redirect(w, r, "/logout", http.StatusSeeOther)
+	}
+}
+
+func PostCvtAdmin(w http.ResponseWriter, r *http.Request) {
+	data, ok := r.Context().Value(user).(*types.Claims)
+	if data != nil && ok {
+		role := data.Role
+		email := data.Email
+		err := r.ParseForm()
+		if err != nil {
+			http.Redirect(w, r, "/logout", http.StatusSeeOther)
+			fmt.Println("Invalid Post req paramemeters")
+			return
+		}
+
+		db, err := models.Connection()
+		utils.CheckNilErr(err, "Unable to create Db instance")
+
+		ourUser, found := models.SearchUserEmail(db, email)
+		if !found {
+			http.Redirect(w, r, "/logout", http.StatusSeeOther)
+		}
+
+		if role == "user" {
+			if ourUser.ADMIN_REQUEST == nil || *ourUser.ADMIN_REQUEST {
+				http.Redirect(w, r, "/cvt_admin", http.StatusSeeOther)
+			} else {
+				models.CreateAdminReq(db, ourUser.UUID)
+				http.Redirect(w, r, "/cvt_admin", http.StatusSeeOther)
+			}
+		} else if role == "admin" {
+			err := r.ParseForm()
+			if err != nil {
+				http.Redirect(w, r, "/logout", http.StatusSeeOther)
+				fmt.Println("Invalid Post req paramemeters")
+				return
+			}
+			inp_uuid := strings.TrimSpace(r.FormValue("approve"))
+			status := true
+			if inp_uuid == "" {
+				inp_uuid = strings.TrimSpace(r.FormValue("deny"))
+				status = false
+			}
+			target_uuid, err := strconv.ParseInt(inp_uuid, 10, 64)
+			if err != nil || target_uuid <= 0 {
+				http.Redirect(w, r, "/cvt_admin", http.StatusSeeOther)
+				return
+			}
+			user, found := models.SearchUserUUID(db, int(target_uuid))
+			if !found {
+				fmt.Println("Invalid Post req paramemeters")
+				http.Redirect(w, r, "/logout", http.StatusSeeOther)
+			}
+			if *user.ADMIN_REQUEST {
+				models.SetAdminReq(db, user.UUID, status)
+
+			}
+			http.Redirect(w, r, "/cvt_admin", http.StatusSeeOther)
+			return
+
+		}
 
 	} else {
 		fmt.Println("Invalid Post req paramemeters")

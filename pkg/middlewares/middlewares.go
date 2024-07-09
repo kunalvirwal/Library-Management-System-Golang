@@ -47,7 +47,6 @@ func AuthenticateToken(next http.Handler) http.Handler {
 				tkn, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
 					err := godotenv.Load()
 					utils.CheckNilErr(err, "Unable to load .env in AuthenticateToken")
-
 					return []byte(os.Getenv("SECRET_KEY")), nil
 				})
 				if err != nil {
@@ -87,6 +86,7 @@ func AuthorizeUser(next http.Handler) http.Handler { // common to all middleware
 
 			data, ok := r.Context().Value(user).(*types.Claims)
 			if data != nil && ok {
+				// fmt.Println(data.UUID)
 				if data.Email != "" && data.Name != "" && data.UUID > 0 && (data.Role == "admin" || data.Role == "user") { /////can check expiration date condition too
 					// fmt.Println(data)
 					next.ServeHTTP(w, r)
@@ -125,7 +125,7 @@ func CreateAdmin(next http.HandlerFunc) http.HandlerFunc {
 				NAME:          "admin",
 				EMAIL:         "admin@sdslabs.com",
 				PHN_NO:        9999999999,
-				PASSWORD:      "A",
+				PASSWORD:      utils.SaltNhash("A"),
 				ROLE:          "admin",
 				ADMIN_REQUEST: nil,
 			}

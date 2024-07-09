@@ -19,6 +19,8 @@ func CommonRoutes(r *mux.Router) {
 	r.HandleFunc("/pending", controllers.GetPending).Methods("GET")
 	r.HandleFunc("/account", controllers.Account).Methods("GET")
 	r.HandleFunc("/account", controllers.EditAccount).Methods("POST")
+	r.HandleFunc("/cvt_admin", controllers.GetCvtAdmin).Methods("GET")
+	r.HandleFunc("/cvt_admin", controllers.PostCvtAdmin).Methods("POST")
 
 	r.HandleFunc("/logout", controllers.Logout)
 

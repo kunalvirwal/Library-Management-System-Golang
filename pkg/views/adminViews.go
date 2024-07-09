@@ -40,3 +40,16 @@ func NewBookView() *template.Template {
 	temp := template.Must(template.New("CreateBook.html").Funcs(funcMap).ParseFiles(files...))
 	return temp
 }
+
+func AdminCvtAdminView() *template.Template {
+	files := []string{
+		"pkg/templates/adminCvtAdmin.html",
+		// "pkg/templates/basic.html",
+
+		"pkg/templates/partials/adminTopbar.html",
+		"pkg/templates/partials/adminSidebar.html",
+	}
+
+	temp := template.Must(template.New("adminCvtAdmin.html").Funcs(funcMap).ParseFiles(files...))
+	return temp
+}

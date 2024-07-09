@@ -19,7 +19,7 @@ func GetAdminData(w http.ResponseWriter, r *http.Request) {
 	if data != nil && ok {
 		db, err := models.Connection()
 		utils.CheckNilErr(err, "Unable To load DB in GetUserData")
-		////////////////chek if a user with this jwt exists????
+		////////////////chek if a user with this jwt exists
 		dataset := models.GetAllBooks(db)
 		checked_out := 0
 		for _, val := range dataset {
