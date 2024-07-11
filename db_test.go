@@ -14,7 +14,7 @@ func TestSearchUserEmail(t *testing.T) {
 	got, found := models.SearchUserEmail(db, "admin@sdslabs.com")
 	want := models.USER{
 		NAME:          "admin",
-		PASSWORD:      "$2a$04$hgmWQ3ww4JHqjG5m37Aof.q8OmeDxoOqyKF2.mWBOewFeL2ZiGicS",
+		PASSWORD:      "A",
 		EMAIL:         "admin@sdslabs.com",
 		ROLE:          "admin",
 		PHN_NO:        9999999999,
@@ -24,7 +24,7 @@ func TestSearchUserEmail(t *testing.T) {
 	if !found {
 		t.Errorf("Admin not found")
 	}
-	if got != want {
+	if got.NAME != want.NAME || got.EMAIL != want.EMAIL || got.UUID != want.UUID || got.PHN_NO != want.PHN_NO || got.ROLE != want.ROLE || !(utils.MatchHashtoPassword(got.PASSWORD, want.PASSWORD)) {
 		t.Errorf("got %v, wanted %v", got, want)
 	}
 }
@@ -36,7 +36,7 @@ func TestSearchUserUUID(t *testing.T) {
 	got, found := models.SearchUserUUID(db, 1)
 	want := models.USER{
 		NAME:          "admin",
-		PASSWORD:      "$2a$04$hgmWQ3ww4JHqjG5m37Aof.q8OmeDxoOqyKF2.mWBOewFeL2ZiGicS",
+		PASSWORD:      "A",
 		EMAIL:         "admin@sdslabs.com",
 		ROLE:          "admin",
 		PHN_NO:        9999999999,
@@ -46,7 +46,9 @@ func TestSearchUserUUID(t *testing.T) {
 	if !found {
 		t.Errorf("Admin not found")
 	}
-	if got != want {
+
+	// using each condn indiviually because we have to comapre a hashed password to a string
+	if got.NAME != want.NAME || got.EMAIL != want.EMAIL || got.UUID != want.UUID || got.PHN_NO != want.PHN_NO || got.ROLE != want.ROLE || !(utils.MatchHashtoPassword(got.PASSWORD, want.PASSWORD)) {
 		t.Errorf("got %v, wanted %v", got, want)
 	}
 }
