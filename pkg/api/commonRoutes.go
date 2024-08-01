@@ -8,7 +8,7 @@ import (
 
 func CommonRoutes(r *mux.Router) {
 
-	r.HandleFunc("/", middlewares.CreateAdmin(controllers.LoginPage(false))).Methods("GET") ///////create Admin middleware
+	r.HandleFunc("/", controllers.LoginPage(false)).Methods("GET")
 	r.HandleFunc("/signup", controllers.SignupPage(false)).Methods("GET")
 	r.HandleFunc("/newUser", middlewares.SanitiseEmail(controllers.NewUser)).Methods("POST")
 	r.HandleFunc("/login", middlewares.SanitiseEmail(controllers.Logging)).Methods("POST")

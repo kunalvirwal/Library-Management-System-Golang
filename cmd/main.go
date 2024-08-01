@@ -9,5 +9,4 @@ import (
 func main() {
 	fmt.Println("Server started!")
 	api.StartRouter()
-	fmt.Println("Hello")
 }

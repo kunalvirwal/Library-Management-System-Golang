@@ -37,7 +37,6 @@ func BookCatalogView() *template.Template {
 
 	files := []string{
 		"pkg/templates/bookCatalog.html",
-		// "pkg/templates/basic.html",
 
 		"pkg/templates/partials/userTopbar.html",
 		"pkg/templates/partials/userSidebar.html",
@@ -53,7 +52,6 @@ func BookPageView() *template.Template {
 
 	files := []string{
 		"pkg/templates/bookPage.html",
-		// "pkg/templates/basic.html",
 
 		"pkg/templates/partials/userTopbar.html",
 		"pkg/templates/partials/userSidebar.html",
@@ -69,7 +67,6 @@ func PendingView() *template.Template {
 
 	files := []string{
 		"pkg/templates/pendingReq.html",
-		// "pkg/templates/basic.html",
 
 		"pkg/templates/partials/userTopbar.html",
 		"pkg/templates/partials/userSidebar.html",
@@ -85,7 +82,6 @@ func AccountView() *template.Template {
 
 	files := []string{
 		"pkg/templates/account.html",
-		// "pkg/templates/basic.html",
 
 		"pkg/templates/partials/userTopbar.html",
 		"pkg/templates/partials/userSidebar.html",

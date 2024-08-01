@@ -6,7 +6,7 @@
 - Create `.env` using `sample.env` file and add all the environment variables in it.
   > cp sample.env .env
 
-- In your mysql shell create an new database
+- In your mysql shell create an new database.
   > create database MVCdb;
 
 - Bulid the program using
@@ -17,6 +17,13 @@
 
 - Visit `https://localhost:4000`
 - An admin account will always be created with credentials "admin@sdslabs.com" and password "A" if no other admin account present in database.
+<hr>
+
+- To run for development purposes (Install CompileDaemon) .
+  > go get github.com/githubnemo/CompileDaemon  
+
+  > CompileDaemon -build="go build -o LabsLibrary ./cmd/main.go" -command="./LabsLibrary"
+
 
 # ***Steps to run tests***
 
@@ -60,3 +67,24 @@
   > sudo systemctl status apache2  
 
 Check `mvc.sdslabs.local` on your browser  
+<hr>  
+
+
+###  Login Page
+<p align=center>
+<img src="ReadmeAssets/login.png">
+<p/>
+
+###  Admin Dashboard
+<p align=center>
+<img src="ReadmeAssets/adminDash.png">
+<p/>
+
+###  Books Catalog
+<p align=center>
+<img src="ReadmeAssets/bookCatalog.png">
+<p/>
+
+<p align=center>
+Created by Kunal with ❤️ 
+</p>

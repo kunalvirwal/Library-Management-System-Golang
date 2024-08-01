@@ -30,10 +30,11 @@
                     {{ if eq .path "/pending"  }} aria-current="true" {{end}}>
                     <i class="fas fa-right-to-bracket fa-fw me-3"></i><span>Pending Requests</span>
                 </a>
-
+                <!-- TODO: The Users and Fines functionalities are left for future -->
                 <a href="#" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fas fa-money-bill fa-fw me-3"></i><span>Fines</span>
                 </a>
+                <!-- TODO: end -->
                 
                 <a href="{{if eq .path "/cvt_admin"}} # {{else}} /cvt_admin {{end}}"
                     class="list-group-item list-group-item-action py-2 ripple {{if eq .path "/cvt_admin" }} active {{end}}"

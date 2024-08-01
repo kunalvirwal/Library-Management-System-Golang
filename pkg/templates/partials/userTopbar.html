@@ -34,9 +34,12 @@
                         href="{{if eq .path "/pending"}} # {{else}} /pending {{end}}"><i
                         class="fas fa-right-to-bracket fa-fw me-3"></i><span>Pending Requests</span></a>
                 </li>
+                
+                <!-- TODO: The Users and Fines functionalities are left for future -->
                 <li class="nav-item">
                     <a class="nav-link" href="#"><i class="fas fa-money-bill fa-fw me-3"></i><span>Fines</span></a>
                 </li>
+                <!-- TOD: end -->
                 <li class="nav-item">
                     <a class="nav-link {{if eq .path "/cvt_admin" }} active {{end}}"
                         {{if eq .path "/cvt_admin" }} aria-current="page" {{end}}

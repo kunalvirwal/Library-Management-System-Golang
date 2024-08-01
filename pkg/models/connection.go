@@ -43,3 +43,25 @@ func Connection() (*gorm.DB, error) {
 
 	return db, err
 }
+
+func CheckForAdmin() {
+
+	db, err := Connection()
+	utils.CheckNilErr(err, "Unable to create Db instance")
+
+	if !AdminExist(db) {
+		user := USER{
+			UUID:          1,
+			NAME:          "admin",
+			EMAIL:         "admin@sdslabs.com",
+			PHN_NO:        9999999999,
+			PASSWORD:      utils.SaltNhash("A"),
+			ROLE:          "admin",
+			ADMIN_REQUEST: nil,
+		}
+		result := db.Create(&user)
+		utils.CheckNilErr(result.Error, "Unable to create Admin")
+		fmt.Println("Admin account created")
+	}
+
+}

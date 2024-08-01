@@ -1,4 +1,4 @@
 .env
 LabsLibrary
 todo
-db_schema.sql
+dbSchema.sql

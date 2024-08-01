@@ -5,7 +5,6 @@ import "html/template"
 func AdminDashView() *template.Template {
 	files := []string{
 		"pkg/templates/adminDash.html",
-		// "pkg/templates/basic.html",
 
 		"pkg/templates/partials/adminTopbar.html",
 		"pkg/templates/partials/adminSidebar.html",
@@ -18,7 +17,6 @@ func AdminDashView() *template.Template {
 func EditbookView() *template.Template {
 	files := []string{
 		"pkg/templates/editBookPage.html",
-		// "pkg/templates/basic.html",
 
 		"pkg/templates/partials/adminTopbar.html",
 		"pkg/templates/partials/adminSidebar.html",
@@ -31,7 +29,6 @@ func EditbookView() *template.Template {
 func NewBookView() *template.Template {
 	files := []string{
 		"pkg/templates/CreateBook.html",
-		// "pkg/templates/basic.html",
 
 		"pkg/templates/partials/adminTopbar.html",
 		"pkg/templates/partials/adminSidebar.html",
@@ -44,7 +41,6 @@ func NewBookView() *template.Template {
 func AdminCvtAdminView() *template.Template {
 	files := []string{
 		"pkg/templates/adminCvtAdmin.html",
-		// "pkg/templates/basic.html",
 
 		"pkg/templates/partials/adminTopbar.html",
 		"pkg/templates/partials/adminSidebar.html",

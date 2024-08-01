@@ -6,7 +6,7 @@ func UserDashView() *template.Template {
 
 	files := []string{
 		"pkg/templates/userDash.html",
-		// "pkg/templates/basic.html",
+
 		"pkg/templates/partials/userTopbar.html",
 		"pkg/templates/partials/userSidebar.html",
 	}
@@ -18,7 +18,7 @@ func UserCvtAdminView() *template.Template {
 
 	files := []string{
 		"pkg/templates/userCvtAdmin.html",
-		// "pkg/templates/basic.html",
+
 		"pkg/templates/partials/userTopbar.html",
 		"pkg/templates/partials/userSidebar.html",
 	}

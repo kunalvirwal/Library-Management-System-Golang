@@ -1,0 +1,128 @@
+:root {
+    --approve-green: rgb(12, 224, 12);
+    --background-blue: rgb(18, 139, 225);
+    --background-blue2: rgb(32, 145, 226);
+}
+
+html {
+    height: 100vh;
+    width: 100vw;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+}
+
+.bigboxer {
+    flex: 1;
+}
+
+.boxer {
+    align-items: stretch;
+}
+
+.boxes {
+    flex: 1 1;
+    box-shadow: rgba(0, 0, 0, 0.319) 0px 5px 15px 0px;
+    border-radius: 8px;
+    background: rgb(13, 7, 112);
+    background: linear-gradient(321deg, rgba(13, 7, 112, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+    width: 15vw;
+    min-height: 15vh;
+    height: min-content;
+    min-width: 200px;
+    max-width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    color: white;
+    font-size: 1.5rem;
+    padding: 5px;
+    text-align: center;
+}
+
+.navbar-brand {
+    color: white;
+    font-size: 1.5rem;
+    padding: 5px;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.my-heading {
+    font-family: Arial, roboto, monospace;
+}
+
+.search-input {
+    max-width: 250px;
+}
+
+.heading-margin {
+    margin-left: 10vw;
+    margin-right: 10vw;
+}
+
+.green {
+    color: var(--approve-green);
+}
+
+.red {
+    color: red;
+}
+
+.red2 {
+    color: #e62d2d;
+}
+
+.txt-center {
+    text-align: center;
+}
+
+.txt-left {
+    text-align: left;
+}
+
+.table-margin {
+    margin-left: 12vw;
+    margin-right: 12vw;
+}
+
+.size25 {
+    font-size: 2.5rem;
+}
+
+.size15 {
+    font-size: 1.5rem;
+}
+
+.size125 {
+    font-size: 1.25rem;
+}
+
+.pt25 {
+    padding-top: 25vh;
+}
+
+.bg-blue {
+    background-color: var(--background-blue);
+}
+
+.bg-blue2 {
+    background-color: var(--background-blue2);
+    color: white;
+}
+
+.login-pg-border {
+    border: 2px solid rgba(0, 0, 0, 0.597);
+    border-radius: 6px;
+}
+
+.approve {
+    color: #63E6BE;
+}
+
+.deny {
+    color: #f61e1e;
+}

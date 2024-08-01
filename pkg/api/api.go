@@ -4,10 +4,12 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/kunalvirwal/go-mvc/pkg/middlewares"
+	"github.com/kunalvirwal/go-mvc/pkg/models"
 	"github.com/kunalvirwal/go-mvc/pkg/utils"
 )
 
@@ -18,8 +20,15 @@ func StartRouter() {
 	UserRoutes(r)
 	AdminRoutes(r)
 
+	path, err := filepath.Abs(".")
+
+	if err == nil {
+		s := http.StripPrefix("/styles/", http.FileServer(http.Dir(path+"/pkg/templates/styles/")))
+		r.PathPrefix("/styles/").Handler(s)
+	}
+
+	models.CheckForAdmin()
 	r.Use(middlewares.AuthenticateToken)
-	r.Use(middlewares.AuthorizeUser)
 
 	log.Fatal(http.ListenAndServe(getPort(), r))
 }
