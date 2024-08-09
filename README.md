@@ -9,13 +9,17 @@
 - In your mysql shell create an new database.
   > create database MVCdb;
 
+- Instead Virtually host the server using apache and setup database automatically.
+  > source install.sh
+
+
 - Bulid the program using
   > go build -o LabsLibrary ./cmd/main.go
 
 - Run the server.
   > ./LabsLibrary
 
-- Visit `https://localhost:4000`
+- Visit `http://mvc.sdslabs.local` (Try https is security error on browser)
 - An admin account will always be created with credentials "admin@sdslabs.com" and password "A" if no other admin account present in database.
 <hr>
 
@@ -31,7 +35,7 @@
 - Make sure the program has be executed and used once (Route `/` should have been hit atleast once, and admin details has not been changed otherwiese test will fail to compare), this will setup the database.
 - Run `go test -v`
 
-# ***Steps to Virtual Host on Ubuntu linux***
+# ***Steps to Virtual Host on Ubuntu linux manually***
 
 - Install apache2 and configure:   
   > sudo apt install apache2  
