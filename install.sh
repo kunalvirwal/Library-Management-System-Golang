@@ -1,6 +1,6 @@
 #!/bin/bash
 path=$(pwd)
-echo -e "This script will install and configure apache2, create a virtual host and help in creation of database.\n"
+echo -e "This script will install and configure apache2, create a virtual host and help in creation of database."
 echo -e "Would you like to run the installation script (Y/N)?."
 read -r reply 
 
@@ -17,9 +17,9 @@ fi
 
 if [ -f "mvc.sdslabs.local.conf" ]
 then
-    echo "Configuration File present"
+    echo "Configuration File already present"
 else
-    echo -e "Please enter your emailid\n"
+    echo -e "Please enter your email ID:"
     read -r emailID
 
     if [ -z "$emailID" ]
@@ -41,7 +41,7 @@ else
 EOL
     sudo a2ensite mvc.sdslabs.local.conf
     sudo tee -a /etc/hosts > /dev/null <<EOL
-127.0.0.1   	mvc.sdslabs.local
+127.0.0.1        mvc.sdslabs.local
 EOL
     sudo a2dissite 000-default.conf
     sudo apache2ctl configtest
@@ -51,7 +51,7 @@ EOL
 fi
 
 cd $path
-echo -e "Would you like to setup mysq database? (Note: mysql service should be preinstalled and running) (y/n)\n"
+echo -e "Would you like to setup mysq database? (Note: mysql service should be preinstalled and running) (y/n)"
 read -r reply
 
 if [ "$reply" = "Y" ] || [ "$reply" = "y" ]
